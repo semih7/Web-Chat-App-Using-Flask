@@ -1,0 +1,1 @@
+if this project doesn't work in VsCode, try to PyCharm
