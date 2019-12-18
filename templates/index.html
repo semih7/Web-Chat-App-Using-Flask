@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>KTU Chat App</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <style>
+      
+      div.msg_bbl {
+        background-color: rgb(255, 255, 255);
+        padding: 5px 10px;
+        border-radius: 10px;
+        color: #555;
+        margin-bottom: 5px;
+      }
+      body{ margin:0; padding:0; } /*CSS Sıfırlama*/
+.arkaplan
+{ 
+  position:absolute;
+  z-index:0;
+  margin:0; padding:0;
+  height:100%;width:100%; 
+}
+
+    </style>
+  </head>
+  <body>
+    
+      <div class="arkaplan">
+          <img src="https://wallpaperplay.com/walls/full/6/8/d/29954.jpg" class="arkaplan">
+        </div>
+    <div class="text-center well"></div><b>Karadeniz Teknik Üniversitesi Bilgisayar Mühendisliği </b></div>
+
+    <div class="container">
+      <div class="col-sm-8">
+        <div class="no_message">
+          <h1 style='color: rgb(255, 255, 255)'>Mesaj Yok...</h1>
+          <div class="message_holder"></div>
+
+        </div>
+      </div>
+      <div class="col-sm-4">
+       
+       
+        <form action="" method="POST">
+          <h1 style="color: rgb(255, 255, 255);">Mesaj Gönder<span class="glyphicon glyphicon-arrow-down"></span></h1>
+          <div class="clearfix" style="margin-top: 5px;"></div>
+          <input type="text" class="username form-control" placeholder="Kullanıcı Adı">
+          <div style="padding-top: 5px;"></div>
+          <input type="text" class="message form-control" placeholder="Mesaj">
+          <div style="padding-top: 5px;"></div>
+          <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-send"></span> Gönder</button>
+        </form>
+      </div>
+    </div>
+  
+
+    <!-- jQuery (Bootstrapin javascript bağlantıları için gerekli olan kısım) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+    <script>
+      var socket = io.connect( 'http://' + document.domain + ':' + location.port )      //URL ayarlandı. socket değişkenine atıldı.
+      // broadcast a message
+      socket.on( 'connect', function() {                              //bağlantı sağlandı.
+        socket.emit( 'my event', {                                    //kullanıcının giriş yapması sağlandı.
+          data: 'User Connected'
+        } )
+        var form = $( 'form' ).on( 'submit', function( e ) {
+          e.preventDefault()
+          let user_name = $( 'input.username' ).val()                 //username alındı.
+          let user_input = $( 'input.message' ).val()                 //kullanıcıdan mesaj alındı.
+          socket.emit( 'my event', {                                  //mesajın ekranda kalması sağlandı.
+            user_name : user_name,
+            message : user_input
+          } )
+          // mesaj gönderildikten sonra label temizlendi.
+          $( 'input.message' ).val( '' ).focus()
+        } )
+      } )
+      // mesajın yakalanması sağlandı.
+      socket.on( 'my response', function( msg ) {
+        console.log( msg )
+        if( typeof msg.user_name !== 'undefined' ) {
+          $( 'h1' ).remove()
+          $( 'div.message_holder' ).append( '<div class="msg_bbl"><b style="rgb(0, 0, 127)">'+msg.user_name+'</b> '+msg.message+'</div>' )
+        }
+      } )
+    </script>
+  </body>
+</html>
